@@ -1,0 +1,99 @@
+div.sql-editor {
+    padding: 0px;
+    height: 500px;
+}
+
+div.sql-editor table.messages {
+    width: 100%;
+}
+
+div.sql-editor tr.new {
+    background-color: lightyellow;
+}
+
+div.sql-editor.dark-theme tr.new {
+    background-color: #660;
+}
+
+div.sql-editor tr.newMore {
+    background-color: #FFFEC0;
+}
+
+div.sql-editor.dark-theme tr.newMore {
+    background-color: #770;
+}
+
+.editor{
+    height: 100%;
+}
+
+/*
+-----------------------------------------------------------
+ */
+
+div.sql-results-tab {
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    margin-top: -10px;
+}
+
+div.sql-results-tab table td {
+    padding: 3px 5px;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    cursor: pointer;
+    color: silver;
+    background-color: #F0F0F0;
+    font-family: Consolas;
+    font-size: 13px;
+}
+
+div.sql-results-tab table td:hover {
+    color: black;
+    background-color: #F8F8FF;
+}
+
+div.sql-results-tab table td div {
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+div.sql-results-tab table td.selected {
+    background-color: white;
+    color: black;
+    box-shadow: 5px 0px 10px 0px rgba(0,0,0,0.45);
+    clip-path: inset(0px -15px 0px 0px);
+}
+
+div.sql-results-body {
+    overflow-x: auto;
+}
+
+div.sql-results-body table td, div.sql-results-body table th {
+    padding: 2px 3px;
+    border: 1px solid lightgrey;
+    white-space: nowrap;
+}
+
+div.sql-results-body table th {
+    padding: 2px 3px;
+    border: 1px solid lightgrey;
+    border-top: 0px;
+}
+
+div.sql-results-body div.error {
+    padding: 15px;
+    background-color: #FFF0F0;
+    color: black;
+}
+
+button.load-more {
+    margin: 10px;
+}
+
+button.load-more:hover {
+    color: blue;
+}
+

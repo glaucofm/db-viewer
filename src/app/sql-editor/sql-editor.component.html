@@ -1,0 +1,61 @@
+<div *ngIf="databaseService.isConnected()" class="sql-editor" [class.dark-theme]="configurationService.theme == 'dark'">
+    <ng-container>
+        <ngx-monaco-editor style="height: 100%;"
+                           [options]="editorOptions"
+                           [(ngModel)]="code"
+                            (onInit)="editorInit($event)">
+        </ngx-monaco-editor>
+    </ng-container>
+</div>
+
+<div *ngIf="databaseService.isConnecting()" style="padding: 20px;">
+    Connecting... <img src="assets/images/spinner-icon-0.gif" style="height: 20px" />
+</div>
+
+<div class="sql-results-tab" *ngIf="grids.length > 0">
+    <table>
+        <tr>
+            <ng-container *ngFor="let grid of grids">
+                <td (click)="selectGrid(grid)" [class.selected]="grid.isSelected">
+                    <div>{{ grid.sql }}</div>
+                </td>
+            </ng-container>
+        </tr>
+    </table>
+</div>
+
+<div class="sql-results-body" style="font: 12px Consolas" *ngIf="grids.length > 0">
+    <ng-container *ngFor="let grid of grids">
+        <ng-container *ngIf="grid.isSelected">
+            <div *ngIf="grid.result === undefined">
+                Executing... <img src="assets/images/spinner-icon-0.gif" style="height: 20px" />
+            </div>
+            <ng-container *ngIf="grid.result !== undefined">
+                <ng-container *ngIf="grid.result.error === undefined">
+                    <table style="background-color: white">
+                        <tr>
+                            <th *ngFor="let column of grid.result.columns" style="font-weight: bold">
+                                {{ column.name }}
+                            </th>
+                        </tr>
+                        <tr *ngFor="let row of grid.result.rows">
+                            <td *ngFor="let column of grid.result.columns">
+                                {{ row[column.name] }}
+                            </td>
+                        </tr>
+                    </table>
+                </ng-container>
+                <button class="load-more" *ngIf="grid.result.hasMoreRows && !grid.isLoadingMore" (click)="loadMoreRows(grid)">
+                    Load Next {{ configurationService.config.numberOfRowsToFetch }} Rows
+                </button>
+                <div *ngIf="grid.isLoadingMore">
+                    Loading more rows... <img src="assets/images/spinner-icon-0.gif" style="height: 20px" />
+                </div>
+                <div *ngIf="grid.result.error !== undefined" class="error">
+                    {{ grid.result.error }}
+                    <pre>{{ grid.sql }}</pre>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>

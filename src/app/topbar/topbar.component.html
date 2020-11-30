@@ -1,0 +1,130 @@
+<div [class.topbar]="true" [class.dark-theme]="configurationService.theme == 'dark'">
+
+    <div class="pure-menu pure-menu-horizontal">
+        <ul class="pure-menu-list">
+
+            <li class="pure-menu-item">
+                <div class="dropdown hover" id="menu-connections">
+
+                    <a class="pure-menu-link" *ngIf="databaseService.connections">
+                        <ng-container *ngIf="databaseService.isConnected() || databaseService.isConnecting()">
+                            <i class="fas fa-link"></i>
+                            {{ databaseService.getActiveConnectionName() }}
+                            <img *ngIf="databaseService.isConnecting()" src="assets/images/spinner-icon-0.gif" style="height: 20px" />
+                        </ng-container>
+                        <ng-container *ngIf="!databaseService.isConnected() && !databaseService.isConnecting()">
+                            <i class="fas fa-plug"></i> Connect...
+                        </ng-container>
+                    </a>
+
+                    <div class="dropdown-content dropdown-connections">
+                        <table>
+                            <tr *ngFor="let connection of databaseService.connections">
+                                <td>
+                                    <a (click)="databaseService.connect(connection)" *ngIf="!connection.isConnected" [class.disconnected]="true">
+                                        {{ connection.name }}
+                                    </a>
+                                    <a *ngIf="connection.isConnected" [class.connected]="true">
+                                        {{ connection.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="connection.isConnected">
+                                        <a (click)="databaseService.disconnect(connection)" class="disconnect"><i class="fas fa-unlink"></i></a>
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <a (click)="editConnection(connection)" class="edit"><i class="far fa-edit"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <a (click)="editConnection()" class="add"><i class="fas fa-plus"></i> Add Connection</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <app-modal *ngIf="!!editingConnection" [visible]="true" (closeModal)="editingConnection = null" [margin]="'10px'" width="450px">
+                        <div body>
+                            <form class="pure-form pure-form-stacked" (ngSubmit)="saveConnection()">
+                                <fieldset>
+                                    <label for="name">Name</label>
+                                    <input id="name" name="name" type="text" class="pure-input-1" [(ngModel)]="editingConnection.name" placeholder="">
+                                    <div class="database-types" style="margin-bottom: 5px">
+                                        <div style="margin-bottom: 5px">Database Type</div>
+                                        <ng-container *ngFor="let type of databaseTypes">
+                                        <span *ngIf="editingConnection.type === type" class="selected" style="margin-right: 15px">
+                                            <i class="fas fa-circle"></i> {{ type }}
+                                        </span>
+                                            <span (click)="editingConnection.type = type" *ngIf="editingConnection.type !== type" class="unselected" style="margin-right: 15px">
+                                            <i class="far fa-circle"></i> {{ type }}
+                                        </span>
+                                        </ng-container>
+                                    </div>
+                                    <label for="host">Host</label>
+                                    <input id="host" name="host" type="text" class="pure-input-1" [(ngModel)]="editingConnection.host" placeholder="">
+                                    <label for="port">Port</label>
+                                    <input id="port" name="port" type="text" class="pure-input-1" [(ngModel)]="editingConnection.port" placeholder="">
+                                    <label for="database">Database</label>
+                                    <input id="database" name="database" type="text" class="pure-input-1" [(ngModel)]="editingConnection.database" placeholder="">
+                                    <label for="username">Username</label>
+                                    <input id="username" name="username" type="text" class="pure-input-1" [(ngModel)]="editingConnection.username" placeholder="">
+                                    <label for="password">Password</label>
+                                    <input id="password" name="password" type="password" class="pure-input-1" [(ngModel)]="editingConnection.password" placeholder="">
+                                    <button type="submit" class="pure-button pure-button-primary">Save</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </app-modal>
+                </div>
+            </li>
+
+            <li class="pure-menu-item">
+                <div class="dropdown hover" id="menu-columns">
+
+                    <a class="pure-menu-link">
+                        <i class="fas fa-grip-vertical"></i> Workspaces
+                    </a>
+
+                    <div class="dropdown-content" id="menu-columns-content">
+                    </div>
+
+                </div>
+            </li>
+
+            <li class="pure-menu-item menu-config">
+                <div class="dropdown hover">
+                    <a class="pure-menu-link">
+                        <i class="fas fa-cog"></i> Configuration
+                    </a>
+                    <div class="dropdown-content">
+                        <div class="themes">
+                            <div>Theme</div>
+                            <span *ngIf="configurationService.theme === 'light'" class="left selected">
+                                <i class="fas fa-circle"></i> Light
+                            </span>
+                            <span (click)="setTheme('light')" *ngIf="configurationService.theme !== 'light'" class="left unselected">
+                                <i class="far fa-circle"></i> Light
+                            </span>
+                            <span *ngIf="configurationService.theme === 'dark'" class="selected">
+                                <i class="fas fa-circle"></i> Dark
+                            </span>
+                            <span (click)="setTheme('dark')" *ngIf="configurationService.theme !== 'dark'" class="unselected">
+                                <i class="far fa-circle"></i> Dark
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div>Number of rows to fetch (page size)</div>
+                            <div>
+                                <input type="text" class="pure-input-1" [(ngModel)]="configurationService.config.numberOfRowsToFetch">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
