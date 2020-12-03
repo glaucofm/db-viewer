@@ -10,7 +10,7 @@
                         <ng-container *ngIf="databaseService.isConnected() || databaseService.isConnecting()">
                             <i class="fas fa-link"></i>
                             {{ databaseService.getActiveConnectionName() }}
-                            <img *ngIf="databaseService.isConnecting()" src="assets/images/spinner-icon-0.gif" style="height: 20px" />
+                            <img *ngIf="databaseService.isConnecting()" src="assets/images/spinner-icon-0.gif" style="height: 15px" />
                         </ng-container>
                         <ng-container *ngIf="!databaseService.isConnected() && !databaseService.isConnecting()">
                             <i class="fas fa-plug"></i> Connect...
@@ -21,10 +21,10 @@
                         <table>
                             <tr *ngFor="let connection of databaseService.connections">
                                 <td>
-                                    <a (click)="databaseService.connect(connection)" *ngIf="!connection.isConnected" [class.disconnected]="true">
+                                    <a *ngIf="!connection.isConnected" [class.disconnected]="true" (click)="databaseService.connect(connection)">
                                         {{ connection.name }}
                                     </a>
-                                    <a *ngIf="connection.isConnected" [class.connected]="true">
+                                    <a *ngIf="connection.isConnected" [class.connected]="true" (click)="databaseService.setActiveConnection(connection)">
                                         {{ connection.name }}
                                     </a>
                                 </td>
@@ -66,7 +66,9 @@
                                     <input id="host" name="host" type="text" class="pure-input-1" [(ngModel)]="editingConnection.host" placeholder="">
                                     <label for="port">Port</label>
                                     <input id="port" name="port" type="text" class="pure-input-1" [(ngModel)]="editingConnection.port" placeholder="">
-                                    <label for="database">Database</label>
+                                    <label for="database">
+                                        {{ editingConnection.type === 'MYSQL'? 'Database' : 'Service Name' }}
+                                    </label>
                                     <input id="database" name="database" type="text" class="pure-input-1" [(ngModel)]="editingConnection.database" placeholder="">
                                     <label for="username">Username</label>
                                     <input id="username" name="username" type="text" class="pure-input-1" [(ngModel)]="editingConnection.username" placeholder="">
@@ -84,11 +86,46 @@
                 <div class="dropdown hover" id="menu-columns">
 
                     <a class="pure-menu-link">
-                        <i class="fas fa-grip-vertical"></i> Workspaces
+                        <i class="fas fa-grip-vertical"></i> Workspaces: {{ workspacesService.workspace.name }}
                     </a>
 
-                    <div class="dropdown-content" id="menu-columns-content">
+                    <div class="dropdown-content dropdown-workspaces">
+                        <table style="width: 100%">
+                            <tr *ngFor="let workspace of workspacesService.workspaces">
+                                <td>
+                                    <a *ngIf="!workspace.isActive" [class.active]="false" (click)="workspacesService.setActive(workspace)">
+                                        {{ workspace.name }}
+                                    </a>
+                                    <a *ngIf="workspace.isActive" [class.active]="true">
+                                        {{ workspace.name }}
+                                    </a>
+                                </td>
+                                <td style="width: 1px">
+                                    <a (click)="editWorkspace(workspace)" class="edit"><i class="far fa-edit"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a (click)="editWorkspace(null)" class="add"><i class="fas fa-plus"></i> Add Workspace</a>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
+
+                    <app-modal *ngIf="!!editingWorkspace" [visible]="true" (closeModal)="editingWorkspace = null" [margin]="'10px'" width="350px">
+                        <div body>
+                            <form class="pure-form pure-form-stacked" (ngSubmit)="workspacesService.saveWorkspace(editingWorkspace); editingWorkspace = null">
+                                <fieldset>
+                                    <label for="namew">Name</label>
+                                    <input id="namew" name="name" type="text" class="pure-input-1" [(ngModel)]="editingWorkspace.name" placeholder="">
+                                    <button type="submit" class="pure-button pure-button-primary">Save</button>
+                                    <button type="button" class="pure-button" (click)="workspacesService.deleteWorkspace(editingWorkspace); editingWorkspace = null" style="margin-left: 10px">
+                                        Delete
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </app-modal>
 
                 </div>
             </li>
@@ -99,21 +136,21 @@
                         <i class="fas fa-cog"></i> Configuration
                     </a>
                     <div class="dropdown-content">
-                        <div class="themes">
-                            <div>Theme</div>
-                            <span *ngIf="configurationService.theme === 'light'" class="left selected">
-                                <i class="fas fa-circle"></i> Light
-                            </span>
-                            <span (click)="setTheme('light')" *ngIf="configurationService.theme !== 'light'" class="left unselected">
-                                <i class="far fa-circle"></i> Light
-                            </span>
-                            <span *ngIf="configurationService.theme === 'dark'" class="selected">
-                                <i class="fas fa-circle"></i> Dark
-                            </span>
-                            <span (click)="setTheme('dark')" *ngIf="configurationService.theme !== 'dark'" class="unselected">
-                                <i class="far fa-circle"></i> Dark
-                            </span>
-                        </div>
+<!--                        <div class="themes">-->
+<!--                            <div>Theme</div>-->
+<!--                            <span *ngIf="configurationService.theme === 'light'" class="left selected">-->
+<!--                                <i class="fas fa-circle"></i> Light-->
+<!--                            </span>-->
+<!--                            <span (click)="setTheme('light')" *ngIf="configurationService.theme !== 'light'" class="left unselected">-->
+<!--                                <i class="far fa-circle"></i> Light-->
+<!--                            </span>-->
+<!--                            <span *ngIf="configurationService.theme === 'dark'" class="selected">-->
+<!--                                <i class="fas fa-circle"></i> Dark-->
+<!--                            </span>-->
+<!--                            <span (click)="setTheme('dark')" *ngIf="configurationService.theme !== 'dark'" class="unselected">-->
+<!--                                <i class="far fa-circle"></i> Dark-->
+<!--                            </span>-->
+<!--                        </div>-->
                         <div class="row">
                             <div>Number of rows to fetch (page size)</div>
                             <div>
@@ -127,4 +164,3 @@
     </div>
 
 </div>
-

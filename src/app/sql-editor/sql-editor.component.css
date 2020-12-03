@@ -1,6 +1,5 @@
 div.sql-editor {
     padding: 0px;
-    height: 500px;
 }
 
 div.sql-editor table.messages {
@@ -34,7 +33,6 @@ div.sql-editor.dark-theme tr.newMore {
 div.sql-results-tab {
     border-top: 1px solid lightgrey;
     border-bottom: 1px solid lightgrey;
-    margin-top: -10px;
 }
 
 div.sql-results-tab table td {
@@ -51,6 +49,41 @@ div.sql-results-tab table td {
 div.sql-results-tab table td:hover {
     color: black;
     background-color: #F8F8FF;
+}
+
+div.sql-results-tab table td.draggable {
+    border: 0px;
+    background-color: #F0F0F0;
+    cursor: ns-resize;
+    width: 100%;
+}
+
+div.sql-results-tab table td.draggable:hover {
+    background-color: #F8F8FF;
+}
+
+div.sql-results-tab table td.draggable.is-dragging {
+    background-color: #F8F8FF;
+}
+
+div.sql-results-tab table td div.actions {
+    display: none;
+    position: relative;
+    margin-top: -17px;
+    font-size: 16px;
+    color: indianred;
+    background-color: white;
+    float: right;
+    margin-bottom: -5px;
+    padding-left: 6px;
+}
+
+div.sql-results-tab table td:hover div.actions {
+    display: block;
+}
+
+div.sql-results-tab table td div.actions:hover {
+    color: red;
 }
 
 div.sql-results-tab table td div {
@@ -97,3 +130,15 @@ button.load-more:hover {
     color: blue;
 }
 
+div.sql-results-body td span.null {
+    color: silver;
+    font-style: italic;
+}
+
+div.sql-results-body td.has-original-value {
+    cursor: pointer;
+}
+
+div.sql-results-body td.has-original-value:hover {
+    color: navy;
+}

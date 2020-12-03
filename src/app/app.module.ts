@@ -16,6 +16,7 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ConfigurationService} from "./service/configuration.service";
 import {IpcService} from "./service/ipc.service";
 import {MonacoEditorModule, NgxMonacoEditorConfig} from "ngx-monaco-editor";
+import {WorkspacesService} from "./service/workspaces.service";
 
 const monacoConfig: NgxMonacoEditorConfig = {
     baseUrl: 'assets',
@@ -44,7 +45,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     providers: [
         DatabaseService,
         ConfigurationService,
-        IpcService
+        IpcService,
+        WorkspacesService
     ],
     bootstrap: [AppComponent]
 })

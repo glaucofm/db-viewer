@@ -18,6 +18,7 @@ class DbClientMySQL {
 
     async disconnect() {
         await this.connection.end();
+        console.log('Disconnected');
     }
 
     async query(sql, offset, pageSize) {
@@ -37,7 +38,7 @@ class DbClientMySQL {
 }
 
 function addPaging(sql, offset, pageSize) {
-    return sql.replace(/;$/, '').replace(/;\n$/, '') + ' limit ' + (pageSize + 1) + ' offset ' + offset;
+    return sql + ' limit ' + (pageSize + 1) + ' offset ' + offset;
 }
 
 module.exports = DbClientMySQL;

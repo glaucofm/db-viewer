@@ -1,5 +1,6 @@
 const { app, ipcMain, BrowserWindow } = require('electron');
 const server = require("./server.js");
+const DBProxy = require("./db-proxy");
 
 let win;
 
@@ -8,7 +9,7 @@ let win;
 function createWindow () {
     win = new BrowserWindow({
         autoHideMenuBar: true,
-        title: 'Kafka Viewer',
+        title: 'DB Viewer',
         webPreferences: {
             webSecurity: false,
             // nodeIntegration: true
@@ -34,6 +35,7 @@ app.on('ready', createWindow);
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         // nodeClient.kill('SIGINT');
+        DBProxy.closeAllConnections();
         app.quit()
     }
 });

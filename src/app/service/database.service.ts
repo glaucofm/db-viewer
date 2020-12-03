@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ApplicationRef, Injectable} from '@angular/core';
 import {ApplicationEvent, DatabaseConnection, EventType, QueryResults} from '../model/types';
 import {EventService} from "./event.service";
 import {ConfigurationService} from "./configuration.service";
@@ -10,9 +10,11 @@ export class DatabaseService {
     public connections: DatabaseConnection[] = [];
     private configurationService: ConfigurationService;
     private connection: DatabaseConnection;
+    private applicationRef: ApplicationRef;
 
-    constructor(configurationService: ConfigurationService) {
+    constructor(configurationService: ConfigurationService, applicationRef: ApplicationRef) {
         this.configurationService = configurationService;
+        this.applicationRef = applicationRef;
         this.connections = configurationService.load('connections');
         if (!this.connections) {
             this.connections = [];
@@ -25,12 +27,12 @@ export class DatabaseService {
     }
 
     private subscribeToEvents() {
-        let _this = this;
-        EventService.emitter.subscribe((event: ApplicationEvent) => {
-            if (event.type == EventType.CONNECTED) {
-                _this.setConnected(event.data);
-            }
-        });
+        // let _this = this;
+        // EventService.emitter.subscribe((event: ApplicationEvent) => {
+        //     if (event.type == EventType.CONNECTED) {
+        //         _this.setConnected(event.data);
+        //     }
+        // });
     }
 
     public saveConnection(connection: DatabaseConnection, editedConnection?: DatabaseConnection) {
@@ -55,11 +57,13 @@ export class DatabaseService {
         this.connection = connection;
     }
 
-    private setConnected(name: string) {
+    public setActiveConnection(connection: DatabaseConnection) {
+        this.connection = connection;
+        this.applicationRef.tick();
     }
 
     public isConnected(): boolean {
-        return this.connections.filter(x => x.isConnected).length > 0;
+        return this.connection && this.connection.isConnected;
     }
 
     public isConnecting(): boolean {
@@ -67,9 +71,11 @@ export class DatabaseService {
     }
 
     public getActiveConnectionName(): string {
-        if (this.connections.filter(x => x.isConnected).length) {
-            return this.connections.find(x => x.isConnected || x.isConnecting).name;
+        let connecting = this.connections.find(x => x.isConnecting);
+        if (connecting) {
+            return connecting.name;
         }
+        return this.connection.name;
     }
 
     public async disconnect(connection: DatabaseConnection) {
@@ -79,7 +85,7 @@ export class DatabaseService {
             body: JSON.stringify(connection)
         });
         connection.isConnected = false;
-        // EventService.emitter.emit({ type: EventType.DISCONNECT, data: connection });
+        this.connection = undefined;
     }
 
     public async executeQuery(sql: string, currentQueryResults: QueryResults = undefined): Promise<QueryResults> {

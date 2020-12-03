@@ -77,6 +77,10 @@ div.dropdown-connections a.disconnect:hover {
 }
 
 div.dropdown-connections a.connected {
+    color: green;
+}
+
+div.dropdown-connections a.connected:hover {
     color: blue;
 }
 

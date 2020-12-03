@@ -9,6 +9,6 @@ enableProdMode();
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    public title = 'kafka-viewer';
+    public title = 'db-viewer';
 }
 

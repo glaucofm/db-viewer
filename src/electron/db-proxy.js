@@ -1,4 +1,5 @@
 const dbClientMySQL = require("./db-client-mysql.js");
+const dbClientOracle = require("./db-client-oracle");
 
 const clients = {};
 
@@ -21,6 +22,14 @@ class DBProxy {
     static getDbClient(type) {
         if (type === 'MYSQL') {
             return new dbClientMySQL();
+        } else if (type === 'ORACLE') {
+            return new dbClientOracle();
+        }
+    }
+
+    static closeAllConnections() {
+        for (let name of Object.getOwnPropertyNames(clients)) {
+            clients[name].disconnect();
         }
     }
 }

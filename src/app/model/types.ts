@@ -41,6 +41,7 @@ export interface ApplicationEvent {
 }
 
 export interface Grid {
+    id: number;
     sql: string;
     result: QueryResults;
     isSelected: boolean;
@@ -52,6 +53,7 @@ export interface QueryResults {
     rows: Row[];
     error: string;
     hasMoreRows: boolean;
+    rowsAffected?: number;
 }
 
 export interface ColumnDefinition {
@@ -60,4 +62,10 @@ export interface ColumnDefinition {
 
 export interface Row {
     [key: string]: any;
+}
+
+export interface Workspace {
+    name: string;
+    text: string;
+    isActive: boolean;
 }
